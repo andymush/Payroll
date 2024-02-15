@@ -1,0 +1,76 @@
+<?php
+
+namespace App\Models;
+
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
+class User extends Authenticatable
+{
+    use HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'email',
+        'password',
+        'type',
+        'phone',
+        'country',
+        'address',
+        'city',
+        'identification_number',
+        'identification_document',
+        'joining_date',
+        'photo',
+        'designation',
+        'bank_name',
+        'bank_account_number',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    /**
+     * Get the user's type.
+     *
+     * @param  int  $value
+     * @return string
+     */
+    // protected function type(): Attribute
+    // {
+    //     return new Attribute(
+    //         get: fn ($value) =>  ["employee", "admin"][$value],
+    //     );
+    // }
+
+    public function getTypeAttribute($value): string
+    {
+        return ["employee", "admin"][$value];
+    }
+}
