@@ -69,7 +69,7 @@ const showingNavigationDropdown = ref(false);
             color="error"
             class="ml-9 "
             >
-            <Link :href="route('logout')" method="post">
+            <Link :href="route('logout')" method="post" as="button">
                 <v-icon>mdi-logout</v-icon>
                 <span>Logout</span>
             </Link>

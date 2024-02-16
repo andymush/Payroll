@@ -1,5 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import EmployeeLayout from '@/Layouts/EmployeeLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { defineProps, ref, onMounted, onBeforeUnmount, watch} from 'vue';
 import axios from 'axios';
@@ -98,113 +99,149 @@ console.log(currentAttendance.value);
 <template>
     <Head title="Dashboard" />
 
-    <AuthenticatedLayout>
-        
-
-        <div class="py-12">
+    <EmployeeLayout>
+        <div class="py-2">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900 dark:text-gray-100">
-                        <v-card
+                <div class="overflow-hidden shadow-sm sm:rounded-lg">  
+                    <div class="p-3 text-gray-900">
+                        <v-container fluid>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-card-title class="text-h4 text-center">
+                                        PAYROLL MANAGEMENT SYSTEM
+                                    </v-card-title>
+                                </v-col>
+                                <v-divider :thickness="7" color="red"></v-divider>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="5" md="6">
+                                    <v-card
                             
-                            :loading="loading"
-                            class="mx-auto my-12"
-                            max-width="374"
-                        >
-                            <template v-slot:loader="{ isActive }">
-                                <v-progress-linear
-                                    :active="isActive"
-                                    color="deep-purple"
-                                    height="4"
-                                    indeterminate
-                                ></v-progress-linear>
-                            </template>
-                            <v-img
-                                height="50%"
-                                cover
-                                src="https://cdn.vuetifyjs.com/images/cards/server-room.jpg"
-                                >
-                                <v-avatar
-                                    color="grey"
-                                    size="150"
-                                    rounded="0"
-                                >
-                                    <v-img cover src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
-                                </v-avatar>
-                                <v-list-item
-                                    class="text-white"
-                                >
-                                <v-title-content>
-                                    <v-list-item-title class="text-h6"> {{ $page.props.auth.user.first_name }} {{ $page.props.auth.user.last_name }}</v-list-item-title>
-                                    <v-list-item-subtitle class="font-weight-bold">{{ employeeDetails.department }} </v-list-item-subtitle>
-                                </v-title-content>
-                            </v-list-item>
-                            </v-img>
+                                        :loading="loading"
+                                        class="mx-auto my-5"
+                                        max-width="374"
+                                    >
+                                        <template v-slot:loader="{ isActive }">
+                                            <v-progress-linear
+                                                :active="isActive"
+                                                color="deep-purple"
+                                                height="4"
+                                                indeterminate
+                                            ></v-progress-linear>
+                                        </template>
+                                        <v-img
+                                            height="50%"
+                                            cover
+                                            src="https://cdn.vuetifyjs.com/images/cards/server-room.jpg"
+                                            >
+                                            <v-avatar
+                                                color="grey"
+                                                size="150"
+                                                rounded="0"
+                                            >
+                                                <v-img cover src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
+                                            </v-avatar>
+                                            <v-list-item
+                                                class="text-white"
+                                            >
+                                            <v-title-content>
+                                                <v-list-item-title class="text-h6"> {{ $page.props.auth.user.first_name }} {{ $page.props.auth.user.last_name }}</v-list-item-title>
+                                                <v-list-item-subtitle class="font-weight-bold">{{ employeeDetails.department }} </v-list-item-subtitle>
+                                            </v-title-content>
+                                        </v-list-item>
+                                        </v-img>
+                                        <v-card-item class="text-center">
+                                            <v-card-text class="text-center ">
+                                                <!-- <div class="text-subtitle-1">
+                                                    Position : Front-end
+                                                </div> -->
+                                                <div>
+                                                    Date of the week 
+                                                    <p class="font-weight-bold text-h6"> 
+                                                        {{ employeeDetails.currentDate }}
+                                                        <br>
+                                                        <v-divider></v-divider>
+                                                        {{ currentTime }}
+                                                    </p>
+                                                </div>
+                                            </v-card-text>
+                                        </v-card-item>
+                                        <v-divider class="mx-4 mb-1"></v-divider>
+                                        <v-card-text class="text-center" v-if="currentAttendance == 'Clocked-Out' ">
+                                            <div class="text-h6 text-weight-bold">
+                                                Clocked Out at : {{ clockedOut || timeOut }}
+                                            </div>
+                                        </v-card-text>  
+                                        <div>
+                                            <v-form @submit.prevent="clockIn" v-if="currentAttendance == 'Absent' || currentAttendance == 'Absent' ">
+                                                <input type="hidden" name="employeeId" :value= employeeDetails.employeeId >
+                                                <input type="hidden" name="currentDate" :value= employeeDetails.currentDate >
+                                                <input type="hidden" name="timeIn" :value= currentTime >
+                                            
+                                                <v-btn 
+                                                class="mb-4"
+                                                block
+                                                variant="flat"
+                                                color="success"
+                                                type="submit"
+                                                v-model = "clockedIn"
+                                                >Clock-In</v-btn>
+                                            </v-form>
+                                        </div>
+                                        <div >
+                                            <v-form @submit.prevent="clockOut" v-if="currentAttendance == 'Present' ">
+                                                <input type="hidden" name="timeOut" :value= currentTime >
+                                            
+                                                <v-btn 
+                                                class="mb-4"
+                                                block
+                                                variant="flat"
+                                                color="warning"
+                                                type="submit"
+                                                >Clock-Out</v-btn>
+                                            </v-form>
+                                        </div>
+                                            <v-btn 
+                                            block
+                                            variant="elevated"
+                                            color="error"
+                                            >
+                                            <Link :href="route('logout')" method="post" as="button">
+                                                LOGOUT 
+                                            </Link>
+                                        </v-btn>
+                                    </v-card>
+                                </v-col>
+                                <v-col cols="7" md="6" class="">
+                                    <v-card
+                                        class="mx-auto my-5"
+                                        max-width="700"
+                                    >
+                                        <v-card-title class="text-h5 text-center underline ">
+                                            Assigned Tasks
+                                        </v-card-title>
+                                        <v-divider thickness="5" color="error"></v-divider>
+                                        <v-list>vasfvs
+                                            <v-list-item
+                                                v-for="item in items"
+                                                :key="item.title"
+                                                link
+                                            >
+                                                <v-list-item-icon>
+                                                    <v-icon>{{ item.icon }}</v-icon>
+                                                </v-list-item-icon>
+                                                <v-list-item-title>{{ item.title }}</v-list-item-title>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-card>
+                                </v-col>
+                            </v-row>
+                        
 
-                            <v-card-item class="text-center">
-                                <v-card-text class="text-center ">
-                                    <!-- <div class="text-subtitle-1">
-                                        Position : Front-end
-                                    </div> -->
-                                    <div>
-                                        Date of the week 
-                                        <p class="font-weight-bold text-h6"> 
-                                            {{ employeeDetails.currentDate }}
-                                            <br>
-                                            <v-divider></v-divider>
-                                            {{ currentTime }}
-                                        </p>
-                                    </div>
-                                </v-card-text>
-                            </v-card-item>
-                            <v-divider class="mx-4 mb-1"></v-divider>
-                            <v-card-text class="text-center" v-if="currentAttendance == 'Clocked-Out' ">
-                                <div class="text-h6 text-weight-bold">
-                                    Clocked Out at : {{ clockedOut || timeOut }}
-                                </div>
-                            </v-card-text>  
-                            <div>
-                                <v-form @submit.prevent="clockIn" v-if="currentAttendance == 'Absent' || currentAttendance == 'Absent' ">
-                                    <input type="hidden" name="employeeId" :value= employeeDetails.employeeId >
-                                    <input type="hidden" name="currentDate" :value= employeeDetails.currentDate >
-                                    <input type="hidden" name="timeIn" :value= currentTime >
-                                
-                                    <v-btn 
-                                    class="mb-4"
-                                    block
-                                    variant="flat"
-                                    color="success"
-                                    type="submit"
-                                    v-model = "clockedIn"
-                                    >Clock-In</v-btn>
-                                </v-form>
-                            </div>
-                            <div >
-                                <v-form @submit.prevent="clockOut" v-if="currentAttendance == 'Present' ">
-                                    <input type="hidden" name="timeOut" :value= currentTime >
-                                
-                                    <v-btn 
-                                    class="mb-4"
-                                    block
-                                    variant="flat"
-                                    color="warning"
-                                    type="submit"
-                                    >Clock-Out</v-btn>
-                                </v-form>
-                            </div>
-                                <v-btn 
-                                block
-                                variant="elevated"
-                                color="error"
-                                >
-                                <Link :href="route('logout')" method="post" as="button">
-                                    LOGOUT 
-                                </Link>
-                            </v-btn>
-                        </v-card>
+                    </v-container>
                     </div>
                 </div>
             </div>
         </div>
-    </AuthenticatedLayout>
+    </EmployeeLayout>
 </template>
