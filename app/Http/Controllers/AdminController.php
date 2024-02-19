@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Departments;
 use Illuminate\Support\Facades\Log;
+use App\Models\Employees;
 
 class AdminController extends Controller
 {
@@ -25,6 +26,14 @@ class AdminController extends Controller
 
         return Inertia::render('Admin/CreateEmployee')
             ->with('departments', $departments);
+    }
+
+    public function employees()
+    {
+        $employees = Employees::all();
+        return Inertia::render('Admin/EmployeesList')
+            ->with('employees', $employees)
+        ;
     }
 
     /**

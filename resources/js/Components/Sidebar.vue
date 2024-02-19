@@ -22,6 +22,13 @@ import { Link } from '@inertiajs/vue3';
         <v-divider></v-divider>
 
         <v-list density="compact" nav>
+            <v-list-item prepend-icon="mdi-view-dashboard">
+                <Link 
+                    :href="route('employee.dashboard')"
+                >
+                    <v-list-item-title>Dashboard</v-list-item-title>
+                </Link>
+            </v-list-item>
             <v-list-item prepend-icon="mdi-cash" title="Payslips"></v-list-item>
             <v-list-item prepend-icon="mdi-file" title="Documents" value="shared"></v-list-item>
             <v-list-item prepend-icon="mdi-calendar">
@@ -31,7 +38,6 @@ import { Link } from '@inertiajs/vue3';
                     <v-list-item-title>Attendance</v-list-item-title>
                 </Link>
             </v-list-item> 
-            
         </v-list>
 
         <v-btn 

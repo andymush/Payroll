@@ -116,19 +116,11 @@ console.log(currentAttendance.value);
                             <v-row>
                                 <v-col cols="5" md="6">
                                     <v-card
-                            
                                         :loading="loading"
-                                        class="mx-auto my-5"
+                                        class="mx-auto my-3"
                                         max-width="374"
+                                        
                                     >
-                                        <template v-slot:loader="{ isActive }">
-                                            <v-progress-linear
-                                                :active="isActive"
-                                                color="deep-purple"
-                                                height="4"
-                                                indeterminate
-                                            ></v-progress-linear>
-                                        </template>
                                         <v-img
                                             height="50%"
                                             cover
@@ -144,42 +136,32 @@ console.log(currentAttendance.value);
                                             <v-list-item
                                                 class="text-white"
                                             >
-                                            <v-title-content>
-                                                <v-list-item-title class="text-h6"> {{ $page.props.auth.user.first_name }} {{ $page.props.auth.user.last_name }}</v-list-item-title>
-                                                <v-list-item-subtitle class="font-weight-bold">{{ employeeDetails.department }} </v-list-item-subtitle>
-                                            </v-title-content>
-                                        </v-list-item>
+                                                <v-title-content>
+                                                    <v-list-item-title class="text-h6"> {{ $page.props.auth.user.first_name }} {{ $page.props.auth.user.last_name }}</v-list-item-title>
+                                                    <v-list-item-subtitle class="font-weight-bold">{{ employeeDetails.department }} </v-list-item-subtitle>
+                                                </v-title-content>
+                                            </v-list-item>
                                         </v-img>
-                                        <v-card-item class="text-center">
                                             <v-card-text class="text-center ">
-                                                <!-- <div class="text-subtitle-1">
-                                                    Position : Front-end
-                                                </div> -->
-                                                <div>
-                                                    Date of the week 
-                                                    <p class="font-weight-bold text-h6"> 
+                                                    <p class="text-h5">Date of the week </p>
+                                                    <p class="font-weight-bold text-h5"> 
                                                         {{ employeeDetails.currentDate }}
                                                         <br>
                                                         <v-divider></v-divider>
                                                         {{ currentTime }}
                                                     </p>
+                                                <br>
+                                                <div class="text-h6 text-weight-bold"  v-if="currentAttendance == 'Clocked-Out'">
+                                                    Clocked Out at : {{ clockedOut || timeOut }}
                                                 </div>
                                             </v-card-text>
-                                        </v-card-item>
-                                        <v-divider class="mx-4 mb-1"></v-divider>
-                                        <v-card-text class="text-center" v-if="currentAttendance == 'Clocked-Out' ">
-                                            <div class="text-h6 text-weight-bold">
-                                                Clocked Out at : {{ clockedOut || timeOut }}
-                                            </div>
-                                        </v-card-text>  
-                                        <div>
+                                        <div class="pa-3">
                                             <v-form @submit.prevent="clockIn" v-if="currentAttendance == 'Absent' || currentAttendance == 'Absent' ">
                                                 <input type="hidden" name="employeeId" :value= employeeDetails.employeeId >
                                                 <input type="hidden" name="currentDate" :value= employeeDetails.currentDate >
                                                 <input type="hidden" name="timeIn" :value= currentTime >
-                                            
                                                 <v-btn 
-                                                class="mb-4"
+                                                class="mb-2"
                                                 block
                                                 variant="flat"
                                                 color="success"
@@ -187,11 +169,9 @@ console.log(currentAttendance.value);
                                                 v-model = "clockedIn"
                                                 >Clock-In</v-btn>
                                             </v-form>
-                                        </div>
-                                        <div >
+                                        
                                             <v-form @submit.prevent="clockOut" v-if="currentAttendance == 'Present' ">
                                                 <input type="hidden" name="timeOut" :value= currentTime >
-                                            
                                                 <v-btn 
                                                 class="mb-4"
                                                 block
@@ -200,16 +180,17 @@ console.log(currentAttendance.value);
                                                 type="submit"
                                                 >Clock-Out</v-btn>
                                             </v-form>
-                                        </div>
+                                        
                                             <v-btn 
                                             block
                                             variant="elevated"
                                             color="error"
                                             >
-                                            <Link :href="route('logout')" method="post" as="button">
-                                                LOGOUT 
-                                            </Link>
-                                        </v-btn>
+                                                <Link :href="route('logout')" method="post" as="button">
+                                                    LOGOUT 
+                                                </Link>
+                                            </v-btn>
+                                        </div>
                                     </v-card>
                                 </v-col>
                                 <v-col cols="7" md="6" class="">
