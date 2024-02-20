@@ -14,18 +14,15 @@ console.log(props.departments)
 <template>
     <Head title="Attendance" />
 
-    <AuthenticatedLayout>
-        
-
-        <div class="py-12">
+    <AdminLayout>
+        <div class="py-6">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class=" shadow-sm sm:rounded-lg">
                     <div class="">
                         <AddEmployeeForm :departments="props.departments"/>
-                        
                     </div>
                 </div>
             </div>
         </div>
-    </AuthenticatedLayout>
+    </AdminLayout>
 </template>

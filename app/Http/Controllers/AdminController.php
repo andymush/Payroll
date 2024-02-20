@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use App\Models\Departments;
 use Illuminate\Support\Facades\Log;
 use App\Models\Employees;
+use App\Models\User;
 
 class AdminController extends Controller
 {
@@ -34,6 +35,25 @@ class AdminController extends Controller
         return Inertia::render('Admin/EmployeesList')
             ->with('employees', $employees)
         ;
+    }
+
+    public function storeEmployee(Request $request)
+    {
+        $data = request()->validate([
+            'emp_name' => 'required',
+            'emp_email' => 'required|email',
+            'emp_phone' => 'required',
+            'emp_address' => 'required',
+            'emp_dob' => 'required'
+        ]);
+
+        $employee = new Employees();
+        $user = new User();
+
+        // Insert into users table then get the user id and insert into employees table
+        
+
+        return redirect()->route('employees');
     }
 
     /**
