@@ -5,16 +5,33 @@ const props = defineProps({
     departments: Array,
 
 })
-console.log(props.departments)
-const departmentNames = props.departments.map(department => department.dept_name);
-const departmentIds = props.departments.map(department => department.id);
-const selectedDepartment = ref('');
+console.log(props.departments);
 
-const firstname = ref('');
-const lastname = ref('');
-const email = ref('');
-const designation = ref('');
-const Department = ref('');
+const departmentNames = props.departments.map(department => department.dept_name);
+const departmentIds = props.departments.map(department => department.dept_id);
+
+
+
+const formData = ref({
+    firstname : '',
+    lastname : '',
+    email : '',
+    designation : '',
+    Department : '',
+    start_date : null,
+})
+
+
+const submit = () => {
+    console.log(formData);
+    axios.post(route('employees.store'), formData)
+        .then(response => {
+            console.log(response);
+        })
+        .catch(error => {
+            console.log(error);
+        })
+}
 
 
 </script>
@@ -35,14 +52,14 @@ const Department = ref('');
           <v-row>
             <v-col cols="9" md="6" >
               <v-text-field
-                v-model="firstname"
+                v-model="formData.firstname"
                 :counter="10"
                 label="First name *"
                 variant="filled"
                 required
               ></v-text-field>
               <v-text-field
-                v-model="lastname"
+                v-model="formData.lastname"
                 :counter="10"
                 label="Last name *"
                 variant="filled"
@@ -50,7 +67,7 @@ const Department = ref('');
                 
               ></v-text-field>
               <v-text-field
-                v-model="email"
+                v-model="formData.email"
                 label="E-mail *"
                 required
                 type="email"
@@ -58,7 +75,7 @@ const Department = ref('');
               ></v-text-field>
             
               <v-text-field
-                v-model="designation"
+                v-model="formData.designation"
                 :counter="10"
                 label="Designation *"
                 required
@@ -68,7 +85,7 @@ const Department = ref('');
               ></v-text-field>
 
               <v-select
-              v-model="selectedDepartment"
+              v-model="formData.Department"
               label="Department"
               :items="departmentNames"
               :item-value="(item, index) => departmentIds[index]"
@@ -81,7 +98,7 @@ const Department = ref('');
             <v-col cols="10" md="6">
               <v-date-picker
                   color="primary"
-                  v-model="date"
+                  v-model="formData.start_date"
                   label="Date of Birth"
                   required
               ></v-date-picker>

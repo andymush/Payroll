@@ -39,21 +39,40 @@ class AdminController extends Controller
 
     public function storeEmployee(Request $request)
     {
+        Log::info($request);
+
         $data = request()->validate([
-            'emp_name' => 'required',
-            'emp_email' => 'required|email',
-            'emp_phone' => 'required',
-            'emp_address' => 'required',
-            'emp_dob' => 'required'
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'email' => 'required',
+            'dept_id' => 'required',
+            'designation' => 'required',
         ]);
 
-        $employee = new Employees();
-        $user = new User();
+        //$employee = new Employees();
+        //$user = new User();
 
         // Insert into users table then get the user id and insert into employees table
-        
+        //create password from the first name and last name of the employee
+        $password = $request->firstname . $request->lastname;
+        Log::info('the password is:',$password);
 
-        return redirect()->route('employees');
+        $user = User::create([
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'email' => $request->email,
+            'password' => Hash::make($request->firstname . $request->lastname),
+        ]);
+        Log::info($user);
+
+        $mployee = Employees::create([
+            'UserId' => $user->id,
+            'DeptId' => $request->dept_id,
+            'designation' => $request->designation,
+            'EmpCode' => 'EMP' . rand(1000, 9999),
+        ]);
+
+        //return redirect()->route('employees');
     }
 
     /**
