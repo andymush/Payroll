@@ -9,6 +9,9 @@ use App\Models\Departments;
 use Illuminate\Support\Facades\Log;
 use App\Models\Employees;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 
 class AdminController extends Controller
 {
@@ -23,7 +26,7 @@ class AdminController extends Controller
     public function createEmployee()
     {
         $departments = Departments::select('dept_id', 'dept_name')->get();
-        Log::info($departments);
+        //Log::info($departments);
 
         return Inertia::render('Admin/CreateEmployee')
             ->with('departments', $departments);
@@ -39,40 +42,36 @@ class AdminController extends Controller
 
     public function storeEmployee(Request $request)
     {
-        Log::info($request);
+        //Log::info($request);
 
-        $data = request()->validate([
+        $request->validate([
             'firstname' => 'required',
             'lastname' => 'required',
-            'email' => 'required',
-            'dept_id' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'department' => 'required',
             'designation' => 'required',
         ]);
 
-        //$employee = new Employees();
-        //$user = new User();
-
-        // Insert into users table then get the user id and insert into employees table
-        //create password from the first name and last name of the employee
-        $password = $request->firstname . $request->lastname;
-        Log::info('the password is:',$password);
+        $employee_password = Str::random(12);
 
         $user = User::create([
-            'firstname' => $request->firstname,
-            'lastname' => $request->lastname,
+            'first_name' => $request->firstname,
+            'last_name' => $request->lastname,
             'email' => $request->email,
-            'password' => Hash::make($request->firstname . $request->lastname),
+            'password' => Hash::make($employee_password),
         ]);
-        Log::info($user);
 
-        $mployee = Employees::create([
+        $employee = Employees::create([
             'UserId' => $user->id,
-            'DeptId' => $request->dept_id,
+            'DeptId' => $request->department,
             'designation' => $request->designation,
+            'start_date' => $request->start_date,
             'EmpCode' => 'EMP' . rand(1000, 9999),
         ]);
 
-        //return redirect()->route('employees');
+        return Inertia::render('Admin/EmployeesList')
+            ->with('employees', Employees::all())
+            ->with('success', 'Employee added successfully');
     }
 
     /**

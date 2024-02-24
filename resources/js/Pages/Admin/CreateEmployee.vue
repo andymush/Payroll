@@ -7,7 +7,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 const props = defineProps({
     departments: Array,
 }) 
-console.log(props.departments)
+//console.log(props.departments)
 
 </script>
 
@@ -19,7 +19,7 @@ console.log(props.departments)
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class=" shadow-sm sm:rounded-lg">
                     <div class="">
-                        <AddEmployeeForm :departments="props.departments"/>
+                        <AddEmployeeForm :departments="departments"/>
                     </div>
                 </div>
             </div>

@@ -3,28 +3,20 @@ import { ref, defineProps } from 'vue';
 
 const props = defineProps({
     departments: Array,
-
 })
-console.log(props.departments);
-
-const departmentNames = props.departments.map(department => department.dept_name);
-const departmentIds = props.departments.map(department => department.dept_id);
-
-
 
 const formData = ref({
     firstname : '',
     lastname : '',
     email : '',
     designation : '',
-    Department : '',
+    department : '',
     start_date : null,
 })
 
 
 const submit = () => {
-    console.log(formData);
-    axios.post(route('employees.store'), formData)
+    axios.post(route('employees.store'), formData.value)
         .then(response => {
             console.log(response);
         })
@@ -39,15 +31,22 @@ const submit = () => {
 <template>
     <div class="text-center">
       <v-sheet
-        :class="rounded-xl"
+       
         class="mx-auto mt-6"
         elevation="12"
         width="90%"
         bg-color="blue"
       >
-        <div class="d-flex justify-center mt-3 mb-4">
-            <p class="text-h4 text-md-h4 my-3 text-decoration-underline">Add Employee</p>
+        <div class="d-flex justify-center mt-3 mb-1">
+            <p class="text-h4 text-md-h4 my-3 text-decoration-underline">
+              <v-icon class="mr-2">mdi-account-plus</v-icon>
+              Add Employee
+            </p>
         </div>
+        <v-divider></v-divider>
+        <p>
+            Enter the details of the prospect employee and tentative start date
+        </p>
         <v-form class="pa-5">
           <v-row>
             <v-col cols="9" md="6" >
@@ -79,27 +78,21 @@ const submit = () => {
                 :counter="10"
                 label="Designation *"
                 required
-                hide-details
                 variant="filled"
                 class="mb-6"
               ></v-text-field>
 
-              <v-select
-              v-model="formData.Department"
-              label="Department"
-              :items="departmentNames"
-              :item-value="(item, index) => departmentIds[index]"
-              required
-              variant="filled"
-              hint="Please select a department"
-              ></v-select>
+              <v-radio-group v-model="formData.department" class="ml-4">
+                <v-label class="text-h5">Department</v-label>
+                <v-radio v-for="(department, index) in departments" :key="index" :label="department.dept_name" :value="department.dept_id"></v-radio>
+              </v-radio-group>
               
             </v-col>
             <v-col cols="10" md="6">
               <v-date-picker
                   color="primary"
                   v-model="formData.start_date"
-                  label="Date of Birth"
+                  label="Start Date "
                   required
               ></v-date-picker>
             </v-col>
