@@ -9,6 +9,8 @@ const props = defineProps([
 ])
 
 const items = ref(props.employeeAttendance);
+
+console.log(props.employeeAttendance)
 </script>
 
 <template>

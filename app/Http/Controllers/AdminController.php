@@ -11,6 +11,7 @@ use App\Models\Employees;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Mail\EmployeeAccountCreation;
 
 
 class AdminController extends Controller
@@ -68,6 +69,17 @@ class AdminController extends Controller
             'start_date' => $request->start_date,
             'EmpCode' => 'EMP' . rand(1000, 9999),
         ]);
+
+        //send employee details to employee email
+        $details = [
+            'title' => 'Employee Account Created',
+            'email' => $request->email,
+            'password' => $employee_password,
+        ];
+        
+        Mail::to($request->email)->send(new EmployeeAccountCreation($details));
+
+
 
         return Inertia::render('Admin/EmployeesList')
             ->with('employees', Employees::all())
