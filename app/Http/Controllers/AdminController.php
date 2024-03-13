@@ -12,6 +12,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Mail\EmployeeAccountCreation;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\EmployeeCreationNotification;
 
 
 class AdminController extends Controller
@@ -77,7 +79,7 @@ class AdminController extends Controller
             'password' => $employee_password,
         ];
         
-        Mail::to($request->email)->send(new EmployeeAccountCreation($details));
+        Notification::send($user, new EmployeeCreationNotification($details));
 
 
 
