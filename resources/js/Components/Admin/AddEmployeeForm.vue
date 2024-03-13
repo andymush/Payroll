@@ -1,4 +1,5 @@
 <script setup >
+import { router } from '@inertiajs/vue3';
 import { ref, defineProps } from 'vue';
 
 const props = defineProps({
@@ -14,15 +15,40 @@ const formData = ref({
     start_date : null,
 })
 
+const employeeCreatedSuccess = ref(false);
+const employeeCreationFailed = ref(false);
+const loading = ref(false);
+
 
 const submit = () => {
+    loading.value = true;
     axios.post(route('employees.store'), formData.value)
-        .then(response => {
-            console.log(response);
-        })
-        .catch(error => {
-            console.log(error);
-        })
+      .then(response => {
+        
+          // employeeCreatedSuccess.value = true;
+          // setTimeout(() => {
+          //     employeeCreatedSuccess.value = false;
+          // }, 1500);
+          // window.location.href = route('employees.index' ); 
+          
+          if(response.data.status == 'success'){
+              loading.value = false;
+              employeeCreatedSuccess.value = true;
+              setTimeout(() => {
+                  employeeCreatedSuccess.value = false;
+              }, 1500);
+              window.location.href = route('employees.index' ); 
+          }else{
+              employeeCreationFailed.value = true;
+              setTimeout(() => {
+                  employeeCreationFailed.value = false;
+              }, 1500);
+              router.reload();
+          }
+      })
+      .catch(error => {
+          console.log(error);
+      })
 }
 
 
@@ -106,6 +132,30 @@ const submit = () => {
         
         </v-form>
       </v-sheet>
+      <v-dialog v-model="employeeCreatedSuccess" width="auto">
+        <v-card color="success">
+            <v-card-text class="text-center">
+                <v-icon class="text-center" size="79">mdi-check-circle</v-icon>
+                <div class="pa-6">Employee Added Successfully </div>
+            </v-card-text>
+        </v-card>
+      </v-dialog>
+      <v-dialog v-model="employeeCreationFailed" width="auto">
+          <v-card color="error">
+              <v-card-text class="text-center">
+                  <v-icon class="text-center" size="79" >mdi-alert-circle</v-icon>
+                  <div class="pa-6">Employee  Creation Failed! Please try again.</div>
+              </v-card-text>
+          </v-card>
+      </v-dialog>
+      <v-dialog v-model="loading" width="auto">
+        <v-progress-circular
+          :size="70"
+          :width="7"
+          color="primary"
+          indeterminate
+        ></v-progress-circular>
+      </v-dialog>
     </div>
     
   </template>

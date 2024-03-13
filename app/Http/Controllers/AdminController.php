@@ -79,13 +79,21 @@ class AdminController extends Controller
             'password' => $employee_password,
         ];
         
-        Notification::send($user, new EmployeeCreationNotification($details));
-
-
-
-        return Inertia::render('Admin/EmployeesList')
-            ->with('employees', Employees::all())
-            ->with('success', 'Employee added successfully');
+        try {
+            // Send notification
+            Notification::send($user, new EmployeeCreationNotification($details));
+        
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Email sent',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Email not sent',
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
