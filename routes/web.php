@@ -18,20 +18,25 @@ use App\Http\Controllers\AdminController;
 |
 */
 
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
-
+    return redirect('/login');
+})->name('home');
 
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function(){
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/create-employee', [AdminController::class, 'createEmployee'])->name('employees.add');
+    Route::get('/employees', [AdminController::class, 'employees'])->name('employees.index');
+    Route::get('/attendance', [AttendanceController::class, 'index'])->name('employees.attendance');
+    Route::post('/create-employee', [AdminController::class, 'storeEmployee'])->name('employees.store');
 });
 
 Route::resource('attendance', AttendanceController::class);

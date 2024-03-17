@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 class AttendanceController extends Controller
 {
     /**
@@ -12,7 +13,11 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        //
+        $attendance = Attendance::all();
+        return Inertia::render('Admin/EmployeesAttendance', )
+            ->with('attendance', $attendance);
+            ;
+        
     }
 
     /**

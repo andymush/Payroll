@@ -7,6 +7,14 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Departments;
 use Illuminate\Support\Facades\Log;
+use App\Models\Employees;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use App\Mail\EmployeeAccountCreation;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\EmployeeCreationNotification;
+
 
 class AdminController extends Controller
 {
@@ -21,10 +29,71 @@ class AdminController extends Controller
     public function createEmployee()
     {
         $departments = Departments::select('dept_id', 'dept_name')->get();
-        Log::info($departments);
+        //Log::info($departments);
 
         return Inertia::render('Admin/CreateEmployee')
             ->with('departments', $departments);
+    }
+
+    public function employees()
+    {
+        $employees = Employees::all();
+        return Inertia::render('Admin/EmployeesList')
+            ->with('employees', $employees)
+        ;
+    }
+
+    public function storeEmployee(Request $request)
+    {
+        //Log::info($request);
+
+        $request->validate([
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'department' => 'required',
+            'designation' => 'required',
+        ]);
+
+        $employee_password = Str::random(12);
+
+        $user = User::create([
+            'first_name' => $request->firstname,
+            'last_name' => $request->lastname,
+            'email' => $request->email,
+            'password' => Hash::make($employee_password),
+        ]);
+
+        $employee = Employees::create([
+            'UserId' => $user->id,
+            'DeptId' => $request->department,
+            'designation' => $request->designation,
+            'start_date' => $request->start_date,
+            'EmpCode' => 'EMP' . rand(1000, 9999),
+        ]);
+
+        //send employee details to employee email
+        $details = [
+            'title' => 'Employee Account Created',
+            'email' => $request->email,
+            'password' => $employee_password,
+        ];
+        
+        try {
+            // Send notification
+            Notification::send($user, new EmployeeCreationNotification($details));
+        
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Email sent',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Email not sent',
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

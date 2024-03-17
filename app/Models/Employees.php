@@ -18,6 +18,7 @@ class Employees extends Model
         'UserId',
         'DeptId',
         'EmpCode',
+        'designation',
     ];
 
     public function user()
